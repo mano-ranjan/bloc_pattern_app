@@ -62,16 +62,14 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 FloatingActionButton(
                   onPressed: () {
-                    BlocProvider.of<BlocCounter>(context)
-                        .add(CounterEvent.decrement);
+                    BlocProvider.of<BlocCounter>(context).add(Decrement());
                   },
                   tooltip: 'Decrement',
                   child: const Icon(Icons.remove),
                 ),
                 FloatingActionButton(
                   onPressed: () {
-                    BlocProvider.of<BlocCounter>(context)
-                        .add(CounterEvent.increment);
+                    BlocProvider.of<BlocCounter>(context).add(Increment());
                   },
                   tooltip: 'Increment',
                   child: const Icon(Icons.add),
