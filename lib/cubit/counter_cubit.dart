@@ -1,22 +1,25 @@
-import 'dart:developer';
-
+import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 
-part 'counter_state.dart';
+import 'package:flutter/material.dart';
 
-class CounterCubit extends Cubit<CounterState> {
-  CounterCubit() : super(CounterState(counterValue: 0));
+enum CounterEvent { increment, decrement }
 
-  void increment() => emit(
-        CounterState(
-          counterValue: state.counterValue + 1,
-        ),
-      );
+class CounterBloc extends Bloc<CounterEvent, int> {
+  CounterBloc(int initialState) : super(initialState);
 
-  void decrement() => emit(
-        CounterState(
-          counterValue: state.counterValue - 1,
-        ),
-      );
+  @override
+  int get initialState => 0;
+
+  @override
+  Stream<int> mapEventToState(CounterEvent event) async* {
+    switch (event) {
+      case CounterEvent.decrement:
+        yield state - 1;
+        break;
+      case CounterEvent.increment:
+        yield state + 1;
+        break;
+    }
+  }
 }

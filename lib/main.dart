@@ -1,36 +1,38 @@
-import 'package:bloc_app/cubit/counter_cubit.dart';
+// import 'package:bloc_code/bloc/counter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/counter_bloc.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CounterCubit(),
+    return BlocProvider<BlocCounter>(
+      create: (context) => BlocCounter(),
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: "Bloc Demo",
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        home: const MyHomePage(
+          title: "Bloc Demo Home Page",
+        ),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  final String title;
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  final String title;
-
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -38,50 +40,45 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+        ),
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Increment and decrement using BLoC pattern:',
-                style: TextStyle(
-                  fontSize: 18,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("You have pushed the button this many times: "),
+            BlocBuilder<BlocCounter, CounterState>(
+              builder: (context, state) {
+                return Text(
+                  state.counterValue.toString(),
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FloatingActionButton(
+                  onPressed: () {
+                    BlocProvider.of<BlocCounter>(context)
+                        .add(CounterEvent.decrement);
+                  },
+                  tooltip: 'Decrement',
+                  child: const Icon(Icons.remove),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              BlocBuilder<CounterCubit, CounterState>(
-                builder: (context, state) {
-                  return Text(
-                    state.counterValue.toString(),
-                    style: Theme.of(context).textTheme.headline4,
-                  );
-                },
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  FloatingActionButton(
-                    onPressed: () {
-                      BlocProvider.of<CounterCubit>(context).decrement();
-                    },
-                    child: const Icon(Icons.remove),
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      BlocProvider.of<CounterCubit>(context).increment();
-                    },
-                    child: const Icon(Icons.add),
-                  ),
-                ],
-              )
-            ],
-          ),
+                FloatingActionButton(
+                  onPressed: () {
+                    BlocProvider.of<BlocCounter>(context)
+                        .add(CounterEvent.increment);
+                  },
+                  tooltip: 'Increment',
+                  child: const Icon(Icons.add),
+                )
+              ],
+            )
+          ],
         ),
       ),
     );
